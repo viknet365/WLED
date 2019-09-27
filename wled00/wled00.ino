@@ -533,7 +533,7 @@ void loop() {
     handleNightlight();
     yield();
     if (!onlyAP) {
-      handleknx();
+      handleKnx();
       handleHue();
       handleBlynk();
       yield();
