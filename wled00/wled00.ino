@@ -23,6 +23,7 @@
 //#define WLED_DISABLE_HUESYNC
 //#define WLED_DISABLE_INFRARED    //there is no pin left for this on ESP8266-01
 //#define WLED_DISABLE_MOBILE_UI
+//#define WLED_DISABLE_KNX
 
 
 #define WLED_DISABLE_FILESYSTEM    //SPIFFS is not used by any WLED feature yet
@@ -57,6 +58,11 @@
 #include "src/dependencies/time/Time.h"
 #include "src/dependencies/time/TimeLib.h"
 #include "src/dependencies/timezone/Timezone.h"
+#ifndef WLED_DISABLE_KNX
+ #define KNX_IP_DISABLE_WEBSERVER
+ #define KNX_IP_DISABLE_EEPROM
+ #include <esp-knx-ip.h>
+#endif
 #ifndef WLED_DISABLE_ALEXA
  #define ESPALEXA_ASYNC
  #define ESPALEXA_NO_SUBPAGE
@@ -527,6 +533,7 @@ void loop() {
     handleNightlight();
     yield();
     if (!onlyAP) {
+      handleknx();
       handleHue();
       handleBlynk();
       yield();
