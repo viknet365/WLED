@@ -99,6 +99,7 @@ void wledInit()
   strip.service();
   //init Alexa hue emulation
   if (alexaEnabled && !onlyAP) alexaInit();
+  if (!onlyAP) knxInit();
 
   server.begin();
   DEBUG_PRINTLN("HTTP server started");
