@@ -7,10 +7,10 @@
 void knxInit()
 {
   knx.start();
-  address_t switch_ga = knx.GA_to_address(1, 3, 2);
-  address_t status_ga = knx.GA_to_address(1, 4, 2);
-  address_t scene_ga  = knx.GA_to_address(1, 6, 0);
-  address_t device_pa = knx.PA_to_address(0, 1, 3);
+  address_t switch_ga = knx.GA_to_address(1, 3, 2); // the KNX group address to send ON/OFF command
+  address_t status_ga = knx.GA_to_address(1, 4, 2); // the KNX group address that send it's boolean status
+  address_t scene_ga  = knx.GA_to_address(1, 6, 0); // the KNX group address to receive a scene object 
+  address_t device_pa = knx.PA_to_address(0, 1, 3); // the KNX adresse of the object (anything unique)
 
   
   knx.physical_address_set(device_pa);
@@ -34,7 +34,6 @@ void knx_switch(message_t const &msg, void *arg)
   switch (msg.ct)
   {
     case KNX_CT_WRITE:
-      // Save received data
       DEBUG_PRINTLN("knx received switch");
       if (knx.data_to_bool(msg.data))
       {
@@ -65,8 +64,7 @@ void knx_status(message_t const &msg, void *arg)
   {
     case KNX_CT_READ:
       // Answer with saved data
-      DEBUG_PRINTLN("knx switching off if bri=!0");
-      knx.answer_1bit(msg.received_on, bri);
+      knx.answer_1bit(msg.received_on, (bri!=0) );
       break;
   }
 }
@@ -80,7 +78,7 @@ void knx_scene(message_t const &msg, void *arg)
       DEBUG_PRINT("knx received scene : ");
       DEBUG_PRINTLN(knx.data_to_1byte_int(msg.data));
       applyPreset(knx.data_to_1byte_int(msg.data), true, true, true); 
-      if (!turnOnAtBoot) {
+      if (!turnOnAtBoot && knx.data_to_1byte_int(msg.data)==0) {
         if ( bri != 0 )
         {
           briLast = bri;
