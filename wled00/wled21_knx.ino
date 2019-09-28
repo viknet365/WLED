@@ -85,7 +85,6 @@ void knx_scene(message_t const &msg, void *arg)
         {
           briLast = bri;
           bri = 0;
-          colorUpdated(5);
         }
       }
       colorUpdated(5);
