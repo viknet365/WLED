@@ -7,7 +7,7 @@
 void knxInit()
 {
   knx.start();
-  address_t switch_ga = knx.GA_to_address(1, 3, 2); // the KNX group address to send ON/OFF command
+  address_t switch_ga = knx.GA_to_address(1, 3, 2); // the KNX group address to send ON/OFF command OR a byte object (dimming)
   address_t status_ga = knx.GA_to_address(1, 4, 2); // the KNX group address that send it's boolean status
   address_t scene_ga  = knx.GA_to_address(1, 6, 0); // the KNX group address to receive a scene object 
   address_t device_pa = knx.PA_to_address(0, 1, 3); // the KNX adresse of the object (anything unique)
@@ -35,7 +35,7 @@ void knx_switch(message_t const &msg, void *arg)
   {
     case KNX_CT_WRITE:
       DEBUG_PRINTLN("knx received switch");
-      if (knx.data_to_bool(msg.data))
+      if (knx.data_to_1byte_int(msg.data)!=0)
       {
         DEBUG_PRINTLN("knx switching on if bri=0");
         if ( bri == 0 )
